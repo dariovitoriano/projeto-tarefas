@@ -3,7 +3,8 @@
   "version": "1.0.0",
   "scripts": {
     "start": "node src/server.js",
-    "test": "jest"
+    "test": "jest",
+    "test:coverage": "jest --coverage"
   },
   "dependencies": {
     "express": "^4.19.2"
@@ -11,5 +12,8 @@
   "devDependencies": {
     "jest": "^29.7.0",
     "jest-environment-jsdom": "^29.7.0"
+  },
+  "jest": {
+    "collectCoverageFrom": ["src/tarefas.js", "public/app.js"]
   }
 }
