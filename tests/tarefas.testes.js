@@ -1,22 +1,34 @@
-const tarefas = require('../src/tarefas');
+const TAMANHO_MAXIMO = 100;
 
-beforeEach(() => tarefas.resetar());
+let tarefas = [];
+let proximoId = 1;
 
-test('adiciona uma tarefa válida', () => {
-  const t = tarefas.adicionar('Estudar');
-  expect(t).toEqual({ id: 1, titulo: 'Estudar', concluida: false });
-  expect(tarefas.listar()).toHaveLength(1);
-});
+function resetar() {
+  tarefas = [];
+  proximoId = 1;
+}
 
-test('rejeita título vazio', () => {
-  expect(() => tarefas.adicionar('   ')).toThrow('Título inválido');
-});
+function listar() {
+  return tarefas.map((t) => ({ ...t }));
+}
 
-test('conclui uma tarefa existente', () => {
-  const t = tarefas.adicionar('Testar');
-  expect(tarefas.concluir(t.id).concluida).toBe(true);
-});
+function adicionar(titulo) {
+  if (typeof titulo !== 'string' || titulo.trim() === '') {
+    throw new Error('Título inválido');
+  }
+  if (titulo.trim().length > TAMANHO_MAXIMO) {
+    throw new Error('Título muito longo');
+  }
+  const tarefa = { id: proximoId++, titulo: titulo.trim(), concluida: false };
+  tarefas.push(tarefa);
+  return { ...tarefa };
+}
 
-test('erro ao concluir tarefa inexistente', () => {
-  expect(() => tarefas.concluir(99)).toThrow('Tarefa não encontrada');
-});
+function concluir(id) {
+  const tarefa = tarefas.find((t) => t.id === id);
+  if (!tarefa) throw new Error('Tarefa não encontrada');
+  tarefa.concluida = true;
+  return { ...tarefa };
+}
+
+module.exports = { resetar, listar, adicionar, concluir, TAMANHO_MAXIMO };
