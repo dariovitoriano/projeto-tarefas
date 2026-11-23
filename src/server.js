@@ -17,8 +17,12 @@ app.post('/api/tarefas', (req, res) => {
 });
 
 app.patch('/api/tarefas/:id/concluir', (req, res) => {
+  const id = Number(req.params.id);
+  if (!Number.isInteger(id)) {
+    return res.status(400).json({ erro: 'ID inválido' });
+  }
   try {
-    res.json(tarefas.concluir(Number(req.params.id)));
+    res.json(tarefas.concluir(id));
   } catch (e) {
     res.status(404).json({ erro: e.message });
   }
