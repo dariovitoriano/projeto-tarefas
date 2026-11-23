@@ -1,34 +1,80 @@
-const TAMANHO_MAXIMO = 100;
+const tarefas = require('../src/tarefas');
 
-let tarefas = [];
-let proximoId = 1;
+beforeEach(() => tarefas.resetar());
 
-function resetar() {
-  tarefas = [];
-  proximoId = 1;
-}
+describe('adicionar', () => {
+  test('adiciona uma tarefa válida', () => {
+    const t = tarefas.adicionar('Estudar');
+    expect(t).toEqual({ id: 1, titulo: 'Estudar', concluida: false });
+    expect(tarefas.listar()).toHaveLength(1);
+  });
 
-function listar() {
-  return tarefas.map((t) => ({ ...t }));
-}
+  test('remove espaços do início e do fim do título', () => {
+    expect(tarefas.adicionar('  Estudar  ').titulo).toBe('Estudar');
+  });
 
-function adicionar(titulo) {
-  if (typeof titulo !== 'string' || titulo.trim() === '') {
-    throw new Error('Título inválido');
-  }
-  if (titulo.trim().length > TAMANHO_MAXIMO) {
-    throw new Error('Título muito longo');
-  }
-  const tarefa = { id: proximoId++, titulo: titulo.trim(), concluida: false };
-  tarefas.push(tarefa);
-  return { ...tarefa };
-}
+  test('gera ids crescentes', () => {
+    expect(tarefas.adicionar('A').id).toBe(1);
+    expect(tarefas.adicionar('B').id).toBe(2);
+  });
 
-function concluir(id) {
-  const tarefa = tarefas.find((t) => t.id === id);
-  if (!tarefa) throw new Error('Tarefa não encontrada');
-  tarefa.concluida = true;
-  return { ...tarefa };
-}
+  test('rejeita título vazio', () => {
+    expect(() => tarefas.adicionar('   ')).toThrow('Título inválido');
+  });
 
-module.exports = { resetar, listar, adicionar, concluir, TAMANHO_MAXIMO };
+  test('rejeita título que não é texto', () => {
+    expect(() => tarefas.adicionar(123)).toThrow('Título inválido');
+    expect(() => tarefas.adicionar(undefined)).toThrow('Título inválido');
+  });
+
+  test('rejeita título acima do limite', () => {
+    const longo = 'a'.repeat(tarefas.TAMANHO_MAXIMO + 1);
+    expect(() => tarefas.adicionar(longo)).toThrow('Título muito longo');
+  });
+
+  test('aceita título exatamente no limite', () => {
+    const limite = 'a'.repeat(tarefas.TAMANHO_MAXIMO);
+    expect(tarefas.adicionar(limite).titulo).toHaveLength(tarefas.TAMANHO_MAXIMO);
+  });
+});
+
+describe('concluir', () => {
+  test('conclui uma tarefa existente', () => {
+    const t = tarefas.adicionar('Testar');
+    expect(tarefas.concluir(t.id).concluida).toBe(true);
+  });
+
+  test('a conclusão fica registrada na lista', () => {
+    const t = tarefas.adicionar('Testar');
+    tarefas.concluir(t.id);
+    expect(tarefas.listar()[0].concluida).toBe(true);
+  });
+
+  test('erro ao concluir tarefa inexistente', () => {
+    expect(() => tarefas.concluir(99)).toThrow('Tarefa não encontrada');
+  });
+});
+
+describe('listar', () => {
+  test('começa vazia', () => {
+    expect(tarefas.listar()).toEqual([]);
+  });
+
+  test('alterar a lista retornada não muda os dados internos', () => {
+    tarefas.adicionar('A');
+    const copia = tarefas.listar();
+    copia[0].titulo = 'Alterado';
+    copia.push({ id: 99 });
+    expect(tarefas.listar()).toHaveLength(1);
+    expect(tarefas.listar()[0].titulo).toBe('A');
+  });
+});
+
+describe('resetar', () => {
+  test('limpa as tarefas e reinicia os ids', () => {
+    tarefas.adicionar('A');
+    tarefas.resetar();
+    expect(tarefas.listar()).toEqual([]);
+    expect(tarefas.adicionar('B').id).toBe(1);
+  });
+});
