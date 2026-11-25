@@ -31,4 +31,11 @@ function concluir(id) {
   return { ...tarefa };
 }
 
-module.exports = { resetar, listar, adicionar, concluir, TAMANHO_MAXIMO };
+function remover(id) {
+  const indice = tarefas.findIndex((t) => t.id === id);
+  if (indice === -1) throw new Error('Tarefa não encontrada');
+  const [removida] = tarefas.splice(indice, 1);
+  return { ...removida };
+}
+
+module.exports = { resetar, listar, adicionar, concluir, remover, TAMANHO_MAXIMO };
