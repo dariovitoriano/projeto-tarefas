@@ -1,11 +1,47 @@
 <!DOCTYPE html>
 <html lang="pt-BR">
-<head><meta charset="UTF-8"><title>Tarefas</title></head>
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>Tarefas</title>
+  <style>
+    body { font-family: Arial, sans-serif; background: #f2f4f8; margin: 0; padding: 24px; }
+    main { max-width: 520px; margin: 0 auto; background: #fff; padding: 24px; border-radius: 12px;
+           box-shadow: 0 2px 8px rgba(0, 0, 0, 0.1); }
+    h1 { margin-top: 0; }
+    .entrada { display: flex; gap: 8px; }
+    .entrada input { flex: 1; padding: 10px; border: 1px solid #c7cdd8; border-radius: 6px; font-size: 16px; }
+    button { cursor: pointer; border: none; border-radius: 6px; padding: 8px 12px; font-size: 14px; }
+    #btn-add { background: #2563eb; color: #fff; }
+    .mensagem { color: #b91c1c; min-height: 20px; margin: 8px 0; }
+    .filtros { display: flex; gap: 6px; margin-bottom: 12px; }
+    .filtro { background: #e5e7eb; }
+    .filtro.ativo { background: #2563eb; color: #fff; }
+    ul { list-style: none; padding: 0; margin: 0; }
+    li { display: flex; align-items: center; gap: 6px; padding: 10px 0; border-bottom: 1px solid #e5e7eb; }
+    li .titulo { flex: 1; word-break: break-word; }
+    li.concluida .titulo { color: #6b7280; text-decoration: line-through; }
+    .btn-concluir { background: #16a34a; color: #fff; }
+    .btn-excluir { background: #dc2626; color: #fff; }
+    .contador { color: #4b5563; margin-bottom: 0; }
+  </style>
+</head>
 <body>
-  <h1>Tarefas</h1>
-  <input id="titulo" placeholder="Nova tarefa">
-  <button id="btn-add">Adicionar</button>
-  <ul id="lista"></ul>
+  <main>
+    <h1>Minhas tarefas</h1>
+    <div class="entrada">
+      <input id="titulo" placeholder="Nova tarefa" maxlength="100">
+      <button id="btn-add">Adicionar</button>
+    </div>
+    <p id="mensagem" class="mensagem" role="alert"></p>
+    <div class="filtros">
+      <button class="filtro ativo" data-filtro="todas">Todas</button>
+      <button class="filtro" data-filtro="pendentes">Pendentes</button>
+      <button class="filtro" data-filtro="concluidas">Concluídas</button>
+    </div>
+    <ul id="lista"></ul>
+    <p id="contador" class="contador"></p>
+  </main>
   <script src="app.js"></script>
 </body>
 </html>
