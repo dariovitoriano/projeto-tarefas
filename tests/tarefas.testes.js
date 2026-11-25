@@ -78,3 +78,17 @@ describe('resetar', () => {
     expect(tarefas.adicionar('B').id).toBe(1);
   });
 });
+
+describe('remover', () => {
+  test('remove uma tarefa existente', () => {
+    const t = tarefas.adicionar('A');
+    tarefas.adicionar('B');
+    tarefas.remover(t.id);
+    expect(tarefas.listar()).toHaveLength(1);
+    expect(tarefas.listar()[0].titulo).toBe('B');
+  });
+
+  test('erro ao remover tarefa inexistente', () => {
+    expect(() => tarefas.remover(99)).toThrow('Tarefa não encontrada');
+  });
+});
