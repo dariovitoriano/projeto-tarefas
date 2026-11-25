@@ -28,5 +28,18 @@ app.patch('/api/tarefas/:id/concluir', (req, res) => {
   }
 });
 
+app.delete('/api/tarefas/:id', (req, res) => {
+  const id = Number(req.params.id);
+  if (!Number.isInteger(id)) {
+    return res.status(400).json({ erro: 'ID inválido' });
+  }
+  try {
+    tarefas.remover(id);
+    res.status(204).end();
+  } catch (e) {
+    res.status(404).json({ erro: e.message });
+  }
+});
+
 const PORT = process.env.PORT || 3000;
 app.listen(PORT, () => console.log(`Servidor na porta ${PORT}`));
